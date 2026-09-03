@@ -1,0 +1,58 @@
+name: Опрос заправок и обновление дашборда
+
+on:
+  schedule:
+    # Каждые 15 минут. GitHub может слегка задерживать запуск под нагрузкой
+    # (обычно не больше нескольких минут) — это ограничение самого GitHub,
+    # не наше.
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}  # позволяет запустить вручную кнопкой на вкладке Actions
+
+permissions:
+  contents: write  # нужно, чтобы workflow мог закоммитить и запушить изменения
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Build config.json from secrets
+        env:
+          GPN_COOKIES: ${{ secrets.GPN_COOKIES }}
+          GPN_X_CSRFTOKEN: ${{ secrets.GPN_X_CSRFTOKEN }}
+          GPN_REGION_ID: ${{ secrets.GPN_REGION_ID }}
+          GPN_REGION_NAME: ${{ secrets.GPN_REGION_NAME }}
+          GPN_CITY: ${{ secrets.GPN_CITY }}
+          GPN_FUEL_FILTER: ${{ secrets.GPN_FUEL_FILTER }}
+          GPN_TELEGRAM_BOT_TOKEN: ${{ secrets.GPN_TELEGRAM_BOT_TOKEN }}
+          GPN_TELEGRAM_CHAT_ID: ${{ secrets.GPN_TELEGRAM_CHAT_ID }}
+          GPN_YANDEX_MAPS_API_KEY: ${{ secrets.GPN_YANDEX_MAPS_API_KEY }}
+        run: python write_config_from_env.py
+
+      - name: Опросить станции и обновить дашборд
+        run: python poll.py
+
+      - name: Удалить config.json (не коммитим секреты)
+        run: rm -f config.json
+
+      - name: Закоммитить и запушить изменения
+        run: |
+          git config user.name "gpn-fuel-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html map.html gpn_stations.db
+          if git diff --cached --quiet; then
+            echo "Изменений нет, коммит не нужен."
+          else
+            git commit -m "Автообновление дашборда"
+            git push
+          fi
