@@ -18,7 +18,18 @@ BASE_DIR = Path(__file__).resolve().parent
 
 
 def env(name: str, default: str = "") -> str:
-    return os.environ.get(name, default)
+    """
+    Читает переменную окружения. Важно: в GitHub Actions переменная,
+    привязанная к несозданному секрету (${{ secrets.НЕСУЩЕСТВУЮЩИЙ }}),
+    всё равно ПРИСУТСТВУЕТ в окружении, но как ПУСТАЯ СТРОКА — а не
+    отсутствует полностью. Поэтому os.environ.get() тут не подходит:
+    он вернул бы default только при полном отсутствии переменной, а не
+    при пустом значении. Здесь пустая строка тоже считается "не задано".
+    """
+    value = os.environ.get(name)
+    if value is None or value == "":
+        return default
+    return value
 
 
 def main():
