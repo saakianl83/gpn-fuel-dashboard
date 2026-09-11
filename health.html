@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Наличие/дефицит топлива — Екатеринбург</title>
+<style>
+  :root {
+    --bg: #f7f8fa; --card: #ffffff; --border: #e3e6ea; --text: #1c2530; --muted: #6b7480;
+    --stable: #1e8e3e; --stable-bg: #e6f4ea;
+    --intermittent: #b8860b; --intermittent-bg: #fff6e0;
+    --deficit: #c53929; --deficit-bg: #fce8e6;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; padding: 24px; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h1 { font-size: 20px; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .nav-link {
+    font-size: 12px; font-weight: 500; color: #1a6fc4; text-decoration: none;
+    border: 1px solid #1a6fc4; border-radius: 6px; padding: 3px 10px; white-space: nowrap;
+  }
+  .nav-link:hover { background: #e8f0fe; }
+  .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px 18px; border-top: 4px solid var(--muted);
+  }
+  .card.stable { border-top-color: var(--stable); }
+  .card.intermittent { border-top-color: var(--intermittent); }
+  .card.deficit { border-top-color: var(--deficit); }
+  .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .fuel-icon { font-size: 18px; }
+  .fuel-name { font-weight: 600; font-size: 15px; }
+  .verdict {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.03em;
+    padding: 3px 8px; border-radius: 5px; margin-bottom: 10px;
+  }
+  .card.stable .verdict { color: var(--stable); background: var(--stable-bg); }
+  .card.intermittent .verdict { color: var(--intermittent); background: var(--intermittent-bg); }
+  .card.deficit .verdict { color: var(--deficit); background: var(--deficit-bg); }
+  .ratio-row { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .ratio-bar-track { flex: 1; height: 10px; background: #eef0f2; border-radius: 5px; overflow: hidden; }
+  .ratio-bar-fill { height: 100%; background: currentColor; border-radius: 5px; }
+  .card.stable .ratio-bar-fill { background: var(--stable); }
+  .card.intermittent .ratio-bar-fill { background: var(--intermittent); }
+  .card.deficit .ratio-bar-fill { background: var(--deficit); }
+  .ratio-number { font-size: 18px; font-weight: 700; min-width: 48px; text-align: right; }
+  .meta { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+  .problem-list { font-size: 12px; border-top: 1px solid var(--border); padding-top: 8px; }
+  .problem-list ul { list-style: none; margin: 6px 0 0; padding: 0; }
+  .problem-list li { padding: 3px 0; line-height: 1.4; }
+  .station-name { font-weight: 600; }
+  .station-addr { color: var(--muted); }
+  .station-ratio { font-weight: 700; }
+  .no-problems { color: var(--stable); }
+  .skipped-note { margin-top: 20px; font-size: 12px; color: var(--muted); }
+  .empty-state { color: var(--muted); font-size: 14px; padding: 40px 20px; text-align: center; }
+  .footer { margin-top: 20px; color: var(--muted); font-size: 12px; }
+
+  @media (max-width: 640px) {
+    body { padding: 12px; }
+    h1 { font-size: 17px; }
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <h1>🩺 Наличие/дефицит топлива — Екатеринбург <a class="nav-link" href="dashboard.html">📋 Таблица</a> <a class="nav-link" href="map.html">🗺️ Карта</a></h1>
+  <div class="subtitle">Данные от: 11.09.2026 09:14:11 · доля времени в наличии, усреднённая по станциям</div>
+
+  <div class="cards">
+    <div class="card deficit">
+      <div class="card-header">
+        <span class="fuel-icon">🚨</span>
+        <span class="fuel-name">Бензин АИ-100 брендированный</span>
+      </div>
+      <div class="verdict">СИСТЕМНЫЙ ДЕФИЦИТ</div>
+      <div class="ratio-row">
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:15%"></div></div>
+        <div class="ratio-number">15%</div>
+      </div>
+      <div class="meta">по 30 станциям, 6377 ч суммарной истории</div>
+      <div class="problem-list"><b>Самые проблемные станции:</b><ul><li><span class="station-name">АЗС №131</span> — <span class="station-addr">Екатеринбург, Коммунистическая, 139</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №138</span> — <span class="station-addr">Екатеринбург, Крауля, 166А, 1</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №140</span> — <span class="station-addr">Екатеринбург, Уфимская, 1</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №141</span> — <span class="station-addr">Екатеринбург, Февральской Революции, 53</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №158</span> — <span class="station-addr">Екатеринбург, Бебеля, 31</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №18</span> — <span class="station-addr">Екатеринбург, Космонавтов, 1Б</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №2</span> — <span class="station-addr">Екатеринбург, Титова, 37</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №27</span> — <span class="station-addr">Екатеринбург, Щербакова, 2А</span>: <span class="station-ratio">0%</span></li></ul></div>
+    </div>
+    <div class="card deficit">
+      <div class="card-header">
+        <span class="fuel-icon">🚨</span>
+        <span class="fuel-name">Бензин АИ-92</span>
+      </div>
+      <div class="verdict">СИСТЕМНЫЙ ДЕФИЦИТ</div>
+      <div class="ratio-row">
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:39%"></div></div>
+        <div class="ratio-number">39%</div>
+      </div>
+      <div class="meta">по 44 станциям, 9357 ч суммарной истории</div>
+      <div class="problem-list"><b>Самые проблемные станции:</b><ul><li><span class="station-name">АЗС №1</span> — <span class="station-addr">Екатеринбург, Посадская, 8</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №101</span> — <span class="station-addr">Екатеринбург, Никольский, 1Б</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №131</span> — <span class="station-addr">Екатеринбург, Коммунистическая, 139</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №137</span> — <span class="station-addr">Екатеринбург, Начдива Онуфриева, 23</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №138</span> — <span class="station-addr">Екатеринбург, Крауля, 166А, 1</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №142</span> — <span class="station-addr">Екатеринбург, Высоцкого, 29</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №145</span> — <span class="station-addr">Екатеринбург, Степана Разина, 6</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №146</span> — <span class="station-addr">Екатеринбург, Патриса Лумумбы, 4В</span>: <span class="station-ratio">0%</span></li></ul></div>
+    </div>
+    <div class="card deficit">
+      <div class="card-header">
+        <span class="fuel-icon">🚨</span>
+        <span class="fuel-name">Бензин АИ-95</span>
+      </div>
+      <div class="verdict">СИСТЕМНЫЙ ДЕФИЦИТ</div>
+      <div class="ratio-row">
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:36%"></div></div>
+        <div class="ratio-number">36%</div>
+      </div>
+      <div class="meta">по 41 станциям, 8719 ч суммарной истории</div>
+      <div class="problem-list"><b>Самые проблемные станции:</b><ul><li><span class="station-name">АЗС №1</span> — <span class="station-addr">Екатеринбург, Посадская, 8</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №101</span> — <span class="station-addr">Екатеринбург, Никольский, 1Б</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №131</span> — <span class="station-addr">Екатеринбург, Коммунистическая, 139</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №136</span> — <span class="station-addr">Екатеринбург, Сибирский тракт дублер ( 5- й км )</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №156</span> — <span class="station-addr">Екатеринбург, Блюхера, 1</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №157</span> — <span class="station-addr">Екатеринбург, Высоцкого, 11</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №44</span> — <span class="station-addr">Екатеринбург, Начдива Онуфриева, 57</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №6613</span> — <span class="station-addr">Екатеринбург, Ангарская, 36</span>: <span class="station-ratio">0%</span></li></ul></div>
+    </div>
+    <div class="card deficit">
+      <div class="card-header">
+        <span class="fuel-icon">🚨</span>
+        <span class="fuel-name">Бензин АИ-95 брендированный</span>
+      </div>
+      <div class="verdict">СИСТЕМНЫЙ ДЕФИЦИТ</div>
+      <div class="ratio-row">
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:30%"></div></div>
+        <div class="ratio-number">30%</div>
+      </div>
+      <div class="meta">по 43 станциям, 9144 ч суммарной истории</div>
+      <div class="problem-list"><b>Самые проблемные станции:</b><ul><li><span class="station-name">АЗС №1</span> — <span class="station-addr">Екатеринбург, Посадская, 8</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №101</span> — <span class="station-addr">Екатеринбург, Никольский, 1Б</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №131</span> — <span class="station-addr">Екатеринбург, Коммунистическая, 139</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №145</span> — <span class="station-addr">Екатеринбург, Степана Разина, 6</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №156</span> — <span class="station-addr">Екатеринбург, Блюхера, 1</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №157</span> — <span class="station-addr">Екатеринбург, Высоцкого, 11</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №159</span> — <span class="station-addr">Екатеринбург, Бебеля, 15</span>: <span class="station-ratio">0%</span></li><li><span class="station-name">АЗС №2</span> — <span class="station-addr">Екатеринбург, Титова, 37</span>: <span class="station-ratio">0%</span></li></ul></div>
+    </div>
+    <div class="card stable">
+      <div class="card-header">
+        <span class="fuel-icon">✅</span>
+        <span class="fuel-name">Дизельное топливо летнее</span>
+      </div>
+      <div class="verdict">СТАБИЛЬНО, ДЕФИЦИТА НЕ НАБЛЮДАЕТСЯ</div>
+      <div class="ratio-row">
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:96%"></div></div>
+        <div class="ratio-number">96%</div>
+      </div>
+      <div class="meta">по 34 станциям, 7230 ч суммарной истории</div>
+      <div class="problem-list"><b>Самые проблемные станции:</b><ul><li><span class="station-name">АЗС №158</span> — <span class="station-addr">Екатеринбург, Бебеля, 31</span>: <span class="station-ratio">61%</span></li><li><span class="station-name">АЗС №85</span> — <span class="station-addr">Екатеринбург, Екатеринбург, Перспективная, 1</span>: <span class="station-ratio">70%</span></li></ul></div>
+    </div>
+    <div class="card stable">
+      <div class="card-header">
+        <span class="fuel-icon">✅</span>
+        <span class="fuel-name">Дизельное топливо летнее брендированное</span>
+      </div>
+      <div class="verdict">СТАБИЛЬНО, ДЕФИЦИТА НЕ НАБЛЮДАЕТСЯ</div>
+      <div class="ratio-row">
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:87%"></div></div>
+        <div class="ratio-number">87%</div>
+      </div>
+      <div class="meta">по 9 станциям, 1914 ч суммарной истории</div>
+      <div class="problem-list"><b>Самые проблемные станции:</b><ul><li><span class="station-name">АЗС №157</span> — <span class="station-addr">Екатеринбург, Высоцкого, 11</span>: <span class="station-ratio">1%</span></li></ul></div>
+    </div>
+    <div class="card stable">
+      <div class="card-header">
+        <span class="fuel-icon">✅</span>
+        <span class="fuel-name">СУГ</span>
+      </div>
+      <div class="verdict">СТАБИЛЬНО, ДЕФИЦИТА НЕ НАБЛЮДАЕТСЯ</div>
+      <div class="ratio-row">
+        <div class="ratio-bar-track"><div class="ratio-bar-fill" style="width:100%"></div></div>
+        <div class="ratio-number">100%</div>
+      </div>
+      <div class="meta">по 2 станциям, 426 ч суммарной истории</div>
+      <div class="problem-list no-problems">Явно проблемных станций не выявлено.</div>
+    </div></div>
+  <div class="skipped-note">Ещё 77 комбинаций станция+топливо пропущено — меньше 24 ч истории, рано делать выводы.</div>
+
+  <div class="footer">Статистическая оценка на основе наблюдений бота, а не официальные данные сети — точность растёт по мере накопления истории.</div>
+</body>
+</html>
